@@ -2,63 +2,55 @@ const express = require('express');
 const app = express();
 const PORT = 5000;
 
-// Middleware to parse JSON
+// Middleware
 app.use(express.json());
 
-// Sample data (in-memory database)
-let todos = [
-    { id: 1, task: "Learn Node.js", completed: false },
-    { id: 2, task: "Build a REST API", completed: false },
+// Sample in-memory user data
+let users = [
+    { id: 1, username: 'testuser', password: 'password123' },
 ];
 
-// 1. Get all todos (READ)
-app.get('/api/todos', (req, res) => {
-    res.json(todos);
-});
+// 1. 사용자 등록 API
+app.post('/api/register', (req, res) => {
+    const { username, password } = req.body;
 
-// 2. Add a new todo (CREATE)
-app.post('/api/todos', (req, res) => {
-    const { task } = req.body;
-    if (!task) {
-        return res.status(400).json({ error: "Task is required" });
+    // 유효성 검사
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Username and password are required' });
     }
-    const newTodo = {
-        id: todos.length + 1,
-        task,
-        completed: false,
+
+    // 중복 사용자 검사
+    const existingUser = users.find((user) => user.username === username);
+    if (existingUser) {
+        return res.status(400).json({ error: 'Username already exists' });
+    }
+
+    const newUser = {
+        id: users.length + 1,
+        username,
+        password,
     };
-    todos.push(newTodo);
-    res.status(201).json(newTodo);
+    users.push(newUser);
+    res.status(201).json({ message: 'User registered successfully', user: newUser });
 });
 
-// 3. Update a todo (UPDATE)
-app.put('/api/todos/:id', (req, res) => {
-    const { id } = req.params;
-    const { task, completed } = req.body;
-    const todo = todos.find((t) => t.id === parseInt(id));
+// 2. 로그인 API
+app.post('/api/login', (req, res) => {
+    const { username, password } = req.body;
 
-    if (!todo) {
-        return res.status(404).json({ error: "Todo not found" });
+    // 사용자 인증
+    const user = users.find(
+        (u) => u.username === username && u.password === password
+    );
+
+    if (!user) {
+        return res.status(401).json({ error: 'Invalid username or password' });
     }
-    if (task !== undefined) todo.task = task;
-    if (completed !== undefined) todo.completed = completed;
 
-    res.json(todo);
+    res.status(200).json({ message: 'Login successful', user });
 });
 
-// 4. Delete a todo (DELETE)
-app.delete('/api/todos/:id', (req, res) => {
-    const { id } = req.params;
-    const index = todos.findIndex((t) => t.id === parseInt(id));
-
-    if (index === -1) {
-        return res.status(404).json({ error: "Todo not found" });
-    }
-    todos.splice(index, 1);
-    res.status(204).send();
-});
-
-// Start the server
+// 서버 시작
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
