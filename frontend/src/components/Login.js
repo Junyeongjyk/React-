@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const navigate = useNavigate(); // React Router의 useNavigate 훅
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -21,6 +23,7 @@ const Login = () => {
 
             if (response.ok) {
                 setMessage(`Welcome, ${data.user.username}!`);
+                navigate('/main'); // 로그인 성공 시 메인 화면으로 이동
             } else {
                 setMessage(data.error);
             }
