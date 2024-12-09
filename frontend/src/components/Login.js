@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Login.scss'; // SCSS 파일 임포트
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
-    const navigate = useNavigate(); // React Router의 useNavigate 훅
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -23,7 +24,7 @@ const Login = () => {
 
             if (response.ok) {
                 setMessage(`Welcome, ${data.user.username}!`);
-                navigate('/main'); // 로그인 성공 시 메인 화면으로 이동
+                navigate('/main');
             } else {
                 setMessage(data.error);
             }
@@ -34,7 +35,7 @@ const Login = () => {
     };
 
     return (
-        <div>
+        <div className="login-container">
             <h1>Login</h1>
             <form onSubmit={handleLogin}>
                 <input
