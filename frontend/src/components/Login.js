@@ -1,41 +1,27 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Login.scss'; // SCSS 파일 임포트
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
-    const handleLogin = async (e) => {
+    const handleLogin = (e) => {
         e.preventDefault();
 
-        try {
-            const response = await fetch('http://localhost:5000/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
-            });
+        const validUsername = 'testuser';
+        const validPassword = 'password123';
 
-            const data = await response.json();
-
-            if (response.ok) {
-                setMessage(`Welcome, ${data.user.username}!`);
-                navigate('/main');
-            } else {
-                setMessage(data.error);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            setMessage('An error occurred while logging in.');
+        if (username === validUsername && password === validPassword) {
+            localStorage.setItem('isLoggedIn', 'true'); // 로그인 상태 저장
+            navigate('/main'); // 메인 페이지로 이동
+        } else {
+            alert('Invalid username or password');
         }
     };
 
     return (
-        <div className="login-container">
+        <div>
             <h1>Login</h1>
             <form onSubmit={handleLogin}>
                 <input
@@ -50,9 +36,8 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <button type="submit">Login</button>
+                <button type="submit">Log In</button>
             </form>
-            {message && <p>{message}</p>}
         </div>
     );
 };
