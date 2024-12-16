@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './Community.scss';
 
 const Community = () => {
     const [posts, setPosts] = useState([]);
@@ -78,3 +79,7 @@ const Community = () => {
 };
 
 export default Community;
+
+<style lang='scss'>
+    @import from "./Community.scss";
+</style>

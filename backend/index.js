@@ -9,6 +9,7 @@ const users = [
     { id: 1, username: 'admin', password: '1234' },
     { id: 2, username: 'testuser', password: 'test123' },
 ];
+
 // 1. 사용자 등록 API
 app.post('/api/register', (req, res) => {
     const { username, password } = req.body;
@@ -45,15 +46,25 @@ app.post('/api/login', (req, res) => {
     if (!user) {
         return res.status(401).json({ error: 'Invalid username or password' });
     }
+    
+    // 간단한 토큰 생성 (실제 프로젝트에서는 JWT 사용 권장)
+    const token = `${user.id}-${Date.now()}`;
+    sessions.set(token, username);
 
     res.status(200).json({ message: 'Login successful', user });
 });
 
-// 서버 시작
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+// 인증 미들웨어
+const authenticate = (req, res, next) => {
+    const token = req.headers['authorization'];
 
+    if (!token || !sessions.has(token)) {
+        return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    req.user = sessions.get(token); // 로그인한 사용자 정보 저장
+    next();
+};
 
 // 게시글 데이터를 저장하는 메모리 데이터베이스 (임시)
 let posts = [
@@ -106,6 +117,17 @@ app.delete('/api/posts/:id', (req, res) => {
     if (index === -1) {
         return res.status(404).json({ error: 'Post not found' });
     }
+
+    const post = posts[index];
+    if (post.author !== req.user) {
+        return res.status(403).json({ error: 'You can only delete your own posts' });
+    }
+
     posts.splice(index, 1);
     res.status(204).send();
+});
+
+// 서버 시작
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
 });
