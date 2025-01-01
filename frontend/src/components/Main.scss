@@ -1,8 +1,22 @@
-.main-container {
-    padding: 20px;
+.main-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 
-    h1 {
-        font-size: 2rem;
-        color: #333;
+    .main-content {
+        display: flex;
+        flex: 1;
+        gap: 1rem;
+
+        aside {
+            width: 20%;
+            background: #f9f9f9;
+            padding: 1rem;
+        }
+
+        main {
+            flex: 1;
+            padding: 1rem;
+        }
     }
 }

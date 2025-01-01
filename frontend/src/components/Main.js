@@ -1,5 +1,8 @@
 import React from 'react';
-import Community from './Community';
+import Header from './Header';
+import UserInfo from './UserInfo';
+import Content from './Content';
+import './Main.scss';
 
 const Main = () => {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -14,9 +17,16 @@ const Main = () => {
     }
 
     return (
-        <div>
-            <h1>Welcome to the Main Page!</h1>
-            <Community />
+        <div className="main-layout">
+            <Header />
+            <div className="main-content">
+                <aside>
+                    <UserInfo />
+                </aside>
+                <main>
+                    <Content />
+                </main>
+            </div>
         </div>
     );
 };

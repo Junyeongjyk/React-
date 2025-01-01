@@ -1,0 +1,15 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    .additional-content {
+        background: #eaeaea;
+        padding: 1rem;
+        border-radius: 8px;
+
+        h2 {
+            margin-bottom: 0.5rem;
+        }
+    }
+}
